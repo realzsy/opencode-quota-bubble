@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "id": "io.github.realzsy.opencode-quota-bubble",
+  "name": "OpenCode Go 额度气泡",
+  "version": "0.5.0",
+  "main": "main.js",
+  "author": "realzsy (based on caopengfei's pi-desktop-opencode-quota)",
+  "license": "MIT",
+  "homepage": "https://github.com/realzsy/opencode-quota-bubble",
+  "repository": "https://github.com/realzsy/opencode-quota-bubble.git",
+  "engines": {
+    "piDesktop": ">=0.20.0"
+  },
+  "categories": ["productivity", "developer-tools"],
+  "keywords": ["opencode", "quota", "usage", "subscription", "额度", "订阅", "用量"],
+  "description": "在聊天输入框旁实时显示 OpenCode Go 订阅剩余额度（滚动 5 小时档，剩余 ≤25% 变黄、≤10% 变红，悬停看三档明细，点击打开详情面板）。只读，仅访问一个接口；中英双语，默认跟随系统语言。",
+  "safetyNotes": "只读。唯一请求是 GET opencode.ai/zen/go/v1/usage，且仅在当前供应商为 OpenCode Go 时发出；换成其他供应商时输入框指示器自动隐藏、也不发请求。manifest 已把出网范围限制为 opencode.ai。renderer.extension 只用于在输入框旁绘制本插件自己的指示器；不读取对话记录、项目文件，也不读取 PI-Desktop 自身的供应商密钥；API Key 保存在本机插件设置文件中，不会发往任何其他地方。",
+  "changelog": "0.5.0 — 更名为「OpenCode Go 额度气泡」；详情改为点击指示器弹出居中锚定卡片（三档进度条 + 重置倒计时，Esc/点击外部关闭），移除悬停提示。\\n0.4.0 — 新增聊天输入框实时额度指示器：composerControl 右侧插槽，滚动 5 小时档剩余百分比 + 变色圆点；数据经插件主进程单一接口获取，逻辑与面板共用。\\n0.3.1 — 上架信息改为中文。\\n0.3.0 — 首个公开版本。",
+  "permissions": ["ui.panel", "renderer.extension", "models.list", "net.fetch", "notify"],
+  "renderer": "renderer/quota.mjs",
+  "rendererActions": ["plugin.call"],
+  "rendererCallMethods": ["quota.get", "panel.open", "ping", "selftest"],
+  "net": {
+    "domains": ["opencode.ai"]
+  },
+  "contributes": {
+    "commands": [
+      {
+        "id": "opencodeQuota.open",
+        "title": "OpenCode Quota: Open",
+        "keywords": ["opencode", "quota", "usage", "额度", "订阅"],
+        "category": "Productivity"
+      }
+    ],
+    "settings": [
+      {
+        "key": "apiKey",
+        "type": "string",
+        "default": "",
+        "title": "OpenCode Go API 密钥 / API Key",
+        "description": "在 opencode.ai/console 的「账户 → 个人 API 密钥」创建。保存在本机插件设置文件中。"
+      },
+      {
+        "key": "language",
+        "type": "select",
+        "default": "system",
+        "title": "界面语言 / Language",
+        "enum": [
+          { "label": "跟随系统 / Follow system", "value": "system" },
+          { "label": "简体中文", "value": "zh-CN" },
+          { "label": "English", "value": "en" }
+        ]
+      }
+    ]
+  },
+  "ui": {
+    "panel": "renderer/index.html",
+    "width": 460,
+    "height": 280,
+    "title": {
+      "en": "OpenCode Go Quota Bubble",
+      "zh-CN": "OpenCode Go 额度气泡"
+    }
+  },
+  "i18n": {
+    "en": {
+      "name": "OpenCode Go Quota Bubble",
+      "description": "Live OpenCode Go subscription quota beside the chat composer: rolling 5-hour allowance left, amber under 25%, red under 10%, hover for all three windows and reset times, click to open the detail panel. Read-only, one endpoint, English and Simplified Chinese.",
+      "safetyNotes": "Read-only. It calls exactly one endpoint (GET opencode.ai/zen/go/v1/usage) with an OpenCode Go API key that you paste into this plugin's settings, and only while the active provider is an OpenCode Go one — with any other provider the composer indicator stays hidden and no request is made. renderer.extension only draws this plugin's own indicator next to the chat input. It never reads chats, transcripts, project files, or PI-Desktop's own provider secrets; the key stays in this plugin's local settings file on your machine and is sent nowhere else."
+    },
+    "zh-CN": {
+      "name": "OpenCode Go 额度气泡",
+      "description": "在聊天输入框旁实时显示 OpenCode Go 订阅剩余额度：滚动 5 小时档剩余 ≤25% 变黄、≤10% 变红，悬停查看三档明细与重置倒计时，点击打开详情面板。只读，仅访问一个接口；中英双语，默认跟随系统语言。",
+      "safetyNotes": "只读。唯一请求是 GET opencode.ai/zen/go/v1/usage，且仅在当前供应商为 OpenCode Go 时发出；换成其他供应商时输入框指示器自动隐藏、也不发请求。renderer.extension 只用于在输入框旁绘制本插件自己的指示器。不读取对话记录、项目文件，也不读取 PI-Desktop 自身的供应商密钥；API Key 保存在本机插件设置文件中，不会发往任何其他地方。"
+    }
+  }
+}
